@@ -29,23 +29,4 @@ def main():
 
 
 if __name__ == "__main__":
-    output = agent.get_graph().draw_mermaid()
-    print(output)
-    # with open("agent_graph.png", "wb") as f:
-
-"""
-__start__([<p>__start__</p>]):::first
-planner(planner)
-architect(architect)
-coder(coder)
-__end__([<p>__end__</p>]):::last
-__start__ --> planner;
-architect --> coder;
-coder -. &nbsp;END&nbsp; .-> __end__;
-planner --> architect;
-coder -.-> coder;
-classDef default fill:#f2f0ff,line-height:1.2
-classDef first fill-opacity:0
-classDef last fill:#bfb6fc
-"""
-    #     f.write(output)
+    main()
