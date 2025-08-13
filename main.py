@@ -1,0 +1,51 @@
+import argparse
+import sys
+import traceback
+
+from agent.graph import agent
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Run engineering project planner")
+    parser.add_argument("--recursion-limit", "-r", type=int, default=100,
+                        help="Recursion limit for processing (default: 100)")
+
+    args = parser.parse_args()
+
+    try:
+        user_prompt = input("Enter your project prompt: ")
+        result = agent.invoke(
+            {"user_prompt": user_prompt},
+            {"recursion_limit": args.recursion_limit}
+        )
+        print("Final State:", result)
+    except KeyboardInterrupt:
+        print("\nOperation cancelled by user.")
+        sys.exit(0)
+    except Exception as e:
+        traceback.print_exc()
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    output = agent.get_graph().draw_mermaid()
+    print(output)
+    # with open("agent_graph.png", "wb") as f:
+
+"""
+__start__([<p>__start__</p>]):::first
+planner(planner)
+architect(architect)
+coder(coder)
+__end__([<p>__end__</p>]):::last
+__start__ --> planner;
+architect --> coder;
+coder -. &nbsp;END&nbsp; .-> __end__;
+planner --> architect;
+coder -.-> coder;
+classDef default fill:#f2f0ff,line-height:1.2
+classDef first fill-opacity:0
+classDef last fill:#bfb6fc
+"""
+    #     f.write(output)
