@@ -1,14 +1,20 @@
 from dotenv import load_dotenv
+from langchain.globals import set_verbose, set_debug
 from langchain_groq.chat_models import ChatGroq
 from langgraph.constants import END
 from langgraph.graph import StateGraph
+from langgraph.prebuilt import create_react_agent
 
 from agent.prompts import *
 from agent.states import *
 from agent.tools import write_file, read_file, get_current_directory, list_files
 
 _ = load_dotenv()
-llm = ChatGroq(model="openai/gpt-oss-20b")
+
+set_debug(True)
+set_verbose(True)
+
+llm = ChatGroq(model="openai/gpt-oss-120b")
 
 
 def planner_agent(state: dict) -> dict:
@@ -28,6 +34,10 @@ def architect_agent(state: dict) -> dict:
     resp = llm.with_structured_output(TaskPlan).invoke(
         architect_prompt(plan=plan.model_dump_json())
     )
+    if resp is None:
+        raise ValueError("Planner did not return a valid response.")
+
+    resp.plan = plan
     print(resp.model_dump_json())
     return {"task_plan": resp}
 
@@ -43,9 +53,8 @@ def coder_agent(state: dict) -> dict:
         return {"coder_state": coder_state, "status": "DONE"}
 
     current_task = steps[coder_state.current_step_idx]
-    existing_content = read_file.run(current_task.filepath)  # call tool directly
+    existing_content = read_file.run(current_task.filepath)
 
-    # LLM gets instructions and tools to decide how to write
     system_prompt = coder_system_prompt()
     user_prompt = (
         f"Task: {current_task.task_description}\n"
@@ -54,8 +63,6 @@ def coder_agent(state: dict) -> dict:
         "Use write_file(path, content) to save your changes."
     )
 
-    # Call LLM with structured reasoning + tool calls
-    from langgraph.prebuilt import create_react_agent
     coder_tools = [read_file, write_file, list_files, get_current_directory]
     react_agent = create_react_agent(llm, coder_tools)
 
@@ -83,5 +90,6 @@ graph.add_conditional_edges(
 graph.set_entry_point("planner")
 agent = graph.compile()
 if __name__ == "__main__":
-    result = agent.invoke({"user_prompt": "Build a todo app in html css and js"}, {"recursion_limit": 100})
+    result = agent.invoke({"user_prompt": "Build a colourful modern todo app in html css and js"},
+                          {"recursion_limit": 100})
     print("Final State:", result)
