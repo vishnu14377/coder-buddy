@@ -88,3 +88,29 @@ footer a:hover {
 .contact-form input[type="submit":hover] {
   background-color: #004c7a;
 }
+
+/* Responsive design */
+
+@media only screen and (max-width: 768px) {
+  .container {
+    max-width: 90%;
+  }
+  .contact-form {
+    padding: 10px;
+  }
+  .contact-form input, .contact-form textarea {
+    padding: 5px;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .container {
+    max-width: 80%;
+  }
+  .contact-form {
+    padding: 5px;
+  }
+  .contact-form input, .contact-form textarea {
+    padding: 3px;
+  }
+}
