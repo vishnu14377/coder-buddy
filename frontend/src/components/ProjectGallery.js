@@ -27,7 +27,8 @@ const ProjectGallery = () => {
   const fetchProjects = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/generated-projects');
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
+      const response = await fetch(`${backendUrl}/api/generated-projects`);
       const data = await response.json();
       
       if (data.success) {
