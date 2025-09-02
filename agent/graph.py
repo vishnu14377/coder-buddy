@@ -78,27 +78,57 @@ def coder_agent(state: dict) -> dict:
 
     steps = coder_state.task_plan.implementation_steps
     if coder_state.current_step_idx >= len(steps):
+        workflow_monitor.complete_session("Project completed successfully")
         return {"coder_state": coder_state, "status": "DONE"}
 
     current_task = steps[coder_state.current_step_idx]
-    existing_content = read_file.run(current_task.filepath)
+    
+    workflow_monitor.start_step("Coder", f"Implementing {current_task.filepath}")
+    
+    try:
+        existing_content = read_file.run(current_task.filepath)
 
-    system_prompt = coder_system_prompt()
-    user_prompt = (
-        f"Task: {current_task.task_description}\n"
-        f"File: {current_task.filepath}\n"
-        f"Existing content:\n{existing_content}\n"
-        "Use write_file(path, content) to save your changes."
-    )
+        system_prompt = coder_system_prompt()
+        user_prompt = (
+            f"Task: {current_task.task_description}\n"
+            f"File: {current_task.filepath}\n"
+            f"Existing content:\n{existing_content}\n"
+            "Use write_file(path, content) to save your changes."
+        )
 
-    coder_tools = [read_file, write_file, list_files, get_current_directory]
-    react_agent = create_react_agent(llm, coder_tools)
+        coder_tools = [read_file, write_file, list_files, get_current_directory]
+        react_agent = create_react_agent(llm, coder_tools)
 
-    react_agent.invoke({"messages": [{"role": "system", "content": system_prompt},
-                                     {"role": "user", "content": user_prompt}]})
+        react_agent.invoke({"messages": [{"role": "system", "content": system_prompt},
+                                         {"role": "user", "content": user_prompt}]})
 
-    coder_state.current_step_idx += 1
-    return {"coder_state": coder_state}
+        coder_state.current_step_idx += 1
+        workflow_monitor.complete_step(f"Completed {current_task.filepath}")
+        return {"coder_state": coder_state}
+    except Exception as e:
+        workflow_monitor.error_step(str(e))
+        return {"coder_state": coder_state, "status": "ERROR"}
+
+
+def qa_agent_node(state: dict) -> dict:
+    """General Q&A agent for handling questions."""
+    question = state.get("question", "")
+    context = state.get("context", "")
+    session_id = state.get("session_id", str(uuid.uuid4()))
+    
+    # Start monitoring for Q&A
+    workflow_monitor.start_session(session_id, f"Q&A: {question}")
+    workflow_monitor.start_step("Q&A Agent", "Processing question")
+    
+    try:
+        answer = qa_agent.answer_question(question, context)
+        workflow_monitor.complete_step(answer)
+        workflow_monitor.complete_session(answer)
+        return {"answer": answer, "session_id": session_id}
+    except Exception as e:
+        workflow_monitor.error_step(str(e))
+        workflow_monitor.error_session(str(e))
+        return {"answer": f"Sorry, I encountered an error: {str(e)}", "session_id": session_id}
 
 
 graph = StateGraph(dict)
