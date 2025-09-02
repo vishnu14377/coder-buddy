@@ -131,22 +131,62 @@ def qa_agent_node(state: dict) -> dict:
         return {"answer": f"Sorry, I encountered an error: {str(e)}", "session_id": session_id}
 
 
-graph = StateGraph(dict)
+# Create two separate graphs - one for project generation, one for Q&A
+project_graph = StateGraph(dict)
+project_graph.add_node("planner", planner_agent)
+project_graph.add_node("architect", architect_agent)
+project_graph.add_node("coder", coder_agent)
 
-graph.add_node("planner", planner_agent)
-graph.add_node("architect", architect_agent)
-graph.add_node("coder", coder_agent)
-
-graph.add_edge("planner", "architect")
-graph.add_edge("architect", "coder")
-graph.add_conditional_edges(
+project_graph.add_edge("planner", "architect")
+project_graph.add_edge("architect", "coder")
+project_graph.add_conditional_edges(
     "coder",
     lambda s: "END" if s.get("status") == "DONE" else "coder",
     {"END": END, "coder": "coder"}
 )
 
-graph.set_entry_point("planner")
-agent = graph.compile()
+project_graph.set_entry_point("planner")
+agent = project_graph.compile()
+
+# Q&A Graph
+qa_graph = StateGraph(dict)
+qa_graph.add_node("qa", qa_agent_node)
+qa_graph.add_edge("qa", END)
+qa_graph.set_entry_point("qa")
+qa_agent_compiled = qa_graph.compile()
+
+
+def route_request(user_input: str, request_type: str = "auto") -> dict:
+    """
+    Route requests to appropriate agent based on input type.
+    
+    Args:
+        user_input: The user's input
+        request_type: 'project' for code generation, 'qa' for questions, 'auto' for automatic detection
+    """
+    if request_type == "auto":
+        # Simple heuristic to detect project requests vs questions
+        project_keywords = ["create", "build", "generate", "make", "develop", "app", "application", "website"]
+        question_keywords = ["what", "how", "why", "when", "where", "who", "can you", "?"]
+        
+        user_lower = user_input.lower()
+        
+        has_project_keywords = any(keyword in user_lower for keyword in project_keywords)
+        has_question_keywords = any(keyword in user_lower for keyword in question_keywords)
+        
+        if has_project_keywords and not has_question_keywords:
+            request_type = "project"
+        elif has_question_keywords and not has_project_keywords:
+            request_type = "qa"
+        elif "?" in user_input:
+            request_type = "qa"
+        else:
+            request_type = "project"  # Default to project generation
+    
+    if request_type == "project":
+        return agent.invoke({"user_prompt": user_input}, {"recursion_limit": 100})
+    else:
+        return qa_agent_compiled.invoke({"question": user_input}, {"recursion_limit": 10})
 if __name__ == "__main__":
     result = agent.invoke({"user_prompt": "Build a colourful modern todo app in html css and js"},
                           {"recursion_limit": 100})
