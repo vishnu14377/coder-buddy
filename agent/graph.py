@@ -188,6 +188,11 @@ def route_request(user_input: str, request_type: str = "auto") -> dict:
     else:
         return qa_agent_compiled.invoke({"question": user_input}, {"recursion_limit": 10})
 if __name__ == "__main__":
-    result = agent.invoke({"user_prompt": "Build a colourful modern todo app in html css and js"},
-                          {"recursion_limit": 100})
-    print("Final State:", result)
+    # Test both types of requests
+    print("Testing project generation:")
+    result1 = route_request("Build a colorful modern todo app in html css and js", "project")
+    print("Project Result:", result1)
+    
+    print("\nTesting Q&A:")
+    result2 = route_request("What is the difference between Python and JavaScript?", "qa")
+    print("Q&A Result:", result2)
