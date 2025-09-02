@@ -18,7 +18,10 @@ _ = load_dotenv()
 set_debug(True)
 set_verbose(True)
 
-llm = ChatGroq(model="openai/gpt-oss-120b")
+llm = ChatGroq(
+    model="llama-3.1-70b-versatile",
+    api_key=os.getenv("GROQ_API_KEY")
+)
 
 
 def planner_agent(state: dict) -> dict:
