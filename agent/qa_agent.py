@@ -13,7 +13,7 @@ load_dotenv()
 class GeneralQAAgent:
     def __init__(self):
         self.llm = ChatGroq(
-            model="llama-3.3-70b-versatile",
+            model="llama3-groq-70b-8192-tool-use-preview",
             api_key=os.getenv("GROQ_API_KEY")
         )
         
