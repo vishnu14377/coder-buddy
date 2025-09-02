@@ -1,0 +1,75 @@
+/* Additional custom styles for App component */
+
+.tab-active {
+  @apply border-b-2 border-blue-500 text-blue-600;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.glass-effect {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.card-hover {
+  transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom color classes for dynamic tab colors */
+.border-primary-500 { border-color: #0ea5e9; }
+.text-primary-600 { color: #0284c7; }
+.text-primary-500 { color: #0ea5e9; }
+
+.border-secondary-500 { border-color: #d946ef; }
+.text-secondary-600 { color: #c026d3; }
+.text-secondary-500 { color: #d946ef; }
+
+.border-accent-500 { border-color: #10b981; }
+.text-accent-600 { color: #059669; }
+.text-accent-500 { color: #10b981; }
+
+/* Loading animations */
+.loading-dots {
+  display: inline-flex;
+  align-items: center;
+}
+
+.loading-dots::after {
+  content: '...';
+  animation: dots 1.5s infinite;
+}
+
+@keyframes dots {
+  0%, 33% { content: '.'; }
+  34%, 66% { content: '..'; }
+  67%, 100% { content: '...'; }
+}
+
+/* Custom scrollbar for chat */
+.chat-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-container::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.5);
+  border-radius: 3px;
+}
+
+.chat-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.8);
+}
