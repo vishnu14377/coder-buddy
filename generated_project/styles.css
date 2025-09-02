@@ -58,3 +58,33 @@ footer a {
 footer a:hover {
   color: #cccccc;
 }
+
+/* Contact form styles */
+
+.contact-form {
+  background-color: #ffffff;
+  padding: 20px;
+  border: 1px solid #cccccc;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.contact-form input, .contact-form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #cccccc;
+}
+
+.contact-form input[type="submit"] {
+  background-color: #00698f;
+  color: #ffffff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.contact-form input[type="submit":hover] {
+  background-color: #004c7a;
+}

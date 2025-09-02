@@ -1,14 +1,44 @@
-// Write the JavaScript content to the file
-write_file('script.js', `// Import the necessary libraries
-import { read_file, write_file } from './tools.js';
+// Get the form element
+var form = document.getElementById('contact-form');
 
-// Define a function to display a message in the HTML page
-function displayMessage(message) {
-  const msgElement = document.getElementById('message');
-  msgElement.innerText = message;
-}
+// Add event listener to the form
+form.addEventListener('submit', function(event) {
+    // Prevent default form submission
+    event.preventDefault();
 
-// Add an event listener to display a message when the button is clicked
-const button = document.getElementById('button');
-button.addEventListener('click', () => displayMessage('Hello, World!'));
-`);
+    // Validate form fields
+    var name = document.getElementById('name').value;
+    var email = document.getElementById('email').value;
+    var message = document.getElementById('message').value;
+
+    // Check if fields are not empty
+    if (name === '' || email === '' || message === '') {
+        alert('Please fill in all fields.');
+        return;
+    }
+
+    // Check if email is valid
+    if (!email.includes('@')) {
+        alert('Invalid email address.');
+        return;
+    }
+
+    // Get the form data
+    var formData = {
+        name: name,
+        email: email,
+        message: message
+    };
+
+    // Send data to server for storage
+    fetch('/submit', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => console.log(data))
+    .catch(error => console.error('Error:', error));
+});
