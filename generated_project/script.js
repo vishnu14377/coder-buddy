@@ -1,3 +1,33 @@
+// Function to validate name
+function validateName(name) {
+    if (name === '' || name.length < 2) {
+        alert('Please enter a valid name.');
+        return false;
+    } else {
+        return true;
+    }
+}
+
+// Function to validate email
+function validateEmail(email) {
+    if (!email.includes('@')) {
+        alert('Invalid email address.');
+        return false;
+    } else {
+        return true;
+    }
+}
+
+// Function to validate message
+function validateMessage(message) {
+    if (message === '' || message.length < 10) {
+        alert('Please enter a valid message.');
+        return false;
+    } else {
+        return true;
+    }
+}
+
 // Get the form element
 var form = document.getElementById('contact-form');
 
@@ -12,14 +42,7 @@ form.addEventListener('submit', function(event) {
     var message = document.getElementById('message').value;
 
     // Check if fields are not empty
-    if (name === '' || email === '' || message === '') {
-        alert('Please fill in all fields.');
-        return;
-    }
-
-    // Check if email is valid
-    if (!email.includes('@')) {
-        alert('Invalid email address.');
+    if (!validateName(name) || !validateEmail(email) || !validateMessage(message)) {
         return;
     }
 
