@@ -67,7 +67,8 @@ const QAChat = () => {
     setMessages(prev => [...prev, typingMessage]);
 
     try {
-      const response = await fetch('/api/ask-question', {
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
+      const response = await fetch(`${backendUrl}/api/ask-question`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
