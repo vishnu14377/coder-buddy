@@ -53,15 +53,13 @@ form.addEventListener('submit', function(event) {
         message: message
     };
 
-    // Send data to server for storage
-    fetch('/submit', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-    })
-    .then(response => response.json())
-    .then(data => console.log(data))
-    .catch(error => console.error('Error:', error));
+    // Create a heading text element
+    var heading = document.createElement('h1');
+    heading.textContent = 'Form Submitted Successfully!';
+
+    // Append the heading text to the form
+    form.appendChild(heading);
+
+    // Clear the form fields
+    form.reset();
 });
