@@ -27,12 +27,24 @@ llm = ChatGroq(
 def planner_agent(state: dict) -> dict:
     """Converts user prompt into a structured Plan."""
     user_prompt = state["user_prompt"]
-    resp = llm.with_structured_output(Plan).invoke(
-        planner_prompt(user_prompt)
-    )
-    if resp is None:
-        raise ValueError("Planner did not return a valid response.")
-    return {"plan": resp}
+    session_id = state.get("session_id", str(uuid.uuid4()))
+    
+    # Start monitoring
+    workflow_monitor.start_session(session_id, user_prompt)
+    workflow_monitor.start_step("Planner", "Analyzing user request")
+    
+    try:
+        resp = llm.with_structured_output(Plan).invoke(
+            planner_prompt(user_prompt)
+        )
+        if resp is None:
+            raise ValueError("Planner did not return a valid response.")
+        
+        workflow_monitor.complete_step(resp.model_dump())
+        return {"plan": resp, "session_id": session_id}
+    except Exception as e:
+        workflow_monitor.error_step(str(e))
+        raise e
 
 
 def architect_agent(state: dict) -> dict:
