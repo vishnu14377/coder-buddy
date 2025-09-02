@@ -19,7 +19,7 @@ set_debug(True)
 set_verbose(True)
 
 llm = ChatGroq(
-    model="llama3-groq-70b-8192-tool-use-preview",
+    model="llama-3.3-70b-versatile",
     api_key=os.getenv("GROQ_API_KEY")
 )
 
