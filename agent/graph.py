@@ -50,15 +50,24 @@ def planner_agent(state: dict) -> dict:
 def architect_agent(state: dict) -> dict:
     """Creates TaskPlan from Plan."""
     plan: Plan = state["plan"]
-    resp = llm.with_structured_output(TaskPlan).invoke(
-        architect_prompt(plan=plan.model_dump_json())
-    )
-    if resp is None:
-        raise ValueError("Planner did not return a valid response.")
+    
+    workflow_monitor.start_step("Architect", "Creating implementation tasks")
+    
+    try:
+        resp = llm.with_structured_output(TaskPlan).invoke(
+            architect_prompt(plan=plan.model_dump_json())
+        )
+        if resp is None:
+            raise ValueError("Architect did not return a valid response.")
 
-    resp.plan = plan
-    print(resp.model_dump_json())
-    return {"task_plan": resp}
+        resp.plan = plan
+        print(resp.model_dump_json())
+        
+        workflow_monitor.complete_step(resp.model_dump())
+        return {"task_plan": resp}
+    except Exception as e:
+        workflow_monitor.error_step(str(e))
+        raise e
 
 
 def coder_agent(state: dict) -> dict:
