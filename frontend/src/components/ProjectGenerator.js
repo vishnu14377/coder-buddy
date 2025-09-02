@@ -33,8 +33,7 @@ const ProjectGenerator = () => {
     setResult(null);
 
     try {
-      const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
-      const response = await fetch(`${backendUrl}/api/generate-project`, {
+      const response = await fetch('/api/generate-project', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
