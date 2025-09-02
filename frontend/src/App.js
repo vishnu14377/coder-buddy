@@ -30,8 +30,7 @@ function App() {
 
   const checkConnection = async () => {
     try {
-      const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
-      const response = await fetch(`${backendUrl}/api/health`);
+      const response = await fetch('/api/health');
       if (response.ok) {
         setIsConnected(true);
       }
