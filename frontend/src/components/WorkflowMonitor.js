@@ -27,7 +27,8 @@ const WorkflowMonitor = () => {
 
   const fetchSessions = async () => {
     try {
-      const response = await fetch('/api/sessions');
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
+      const response = await fetch(`${backendUrl}/api/sessions`);
       const data = await response.json();
       
       if (data.success) {
