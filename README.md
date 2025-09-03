@@ -56,7 +56,7 @@
 
 2. **Install Python Dependencies**
    ```bash
-   python -m pip install groq langchain langchain-core langchain-groq langgraph pydantic python-dotenv fastapi uvicorn websockets
+   python -m pip install langchain langchain-core langchain-google-genai langgraph pydantic python-dotenv fastapi uvicorn websockets
    ```
 
 3. **Install Frontend Dependencies**
