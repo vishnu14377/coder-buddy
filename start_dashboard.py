@@ -47,7 +47,7 @@ def main():
         return
     
     if not Path("/app/.env").exists():
-        print("❌ .env file not found! Please create it with your GROQ_API_KEY")
+        print("❌ .env file not found! Please create it with your GOOGLE_API_KEY")
         return
     
     print("✅ All required files found")
