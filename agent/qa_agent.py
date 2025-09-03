@@ -2,7 +2,7 @@
 General Q&A Agent for handling both technical and general knowledge questions.
 """
 
-from langchain_groq.chat_models import ChatGroq
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import SystemMessage, HumanMessage
 from typing import Dict, Any
 import os
@@ -12,9 +12,10 @@ load_dotenv()
 
 class GeneralQAAgent:
     def __init__(self):
-        self.llm = ChatGroq(
-            model="llama-3.3-70b-versatile",
-            api_key=os.getenv("GROQ_API_KEY")
+        self.llm = ChatGoogleGenerativeAI(
+            model="gemini-1.5-flash",
+            api_key=os.getenv("GOOGLE_API_KEY"),
+            temperature=0.3
         )
         
     def get_system_prompt(self) -> str:
