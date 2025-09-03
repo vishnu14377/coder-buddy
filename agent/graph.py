@@ -35,9 +35,20 @@ def planner_agent(state: dict) -> dict:
     workflow_monitor.start_step("Planner", "Analyzing user request")
     
     try:
-        resp = llm.with_structured_output(Plan).invoke(
-            planner_prompt(user_prompt)
+        # Use a more compatible approach for Gemini structured output
+        from langchain_core.output_parsers import PydanticOutputParser
+        from langchain_core.prompts import PromptTemplate
+        
+        parser = PydanticOutputParser(pydantic_object=Plan)
+        prompt = PromptTemplate(
+            template=planner_prompt(user_prompt) + "\n{format_instructions}",
+            input_variables=[],
+            partial_variables={"format_instructions": parser.get_format_instructions()}
         )
+        
+        chain = prompt | llm | parser
+        resp = chain.invoke({})
+        
         if resp is None:
             raise ValueError("Planner did not return a valid response.")
         
