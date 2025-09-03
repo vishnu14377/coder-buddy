@@ -74,6 +74,7 @@ footer a:hover {
   padding: 10px;
   margin-bottom: 20px;
   border: 1px solid #cccccc;
+  border-radius: 5px;
 }
 
 .contact-form input[type="submit"] {
@@ -85,7 +86,7 @@ footer a:hover {
   cursor: pointer;
 }
 
-.contact-form input[type="submit":hover] {
+.contact-form input[type="submit"]:hover {
   background-color: #004c7a;
 }
 
