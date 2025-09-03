@@ -94,24 +94,43 @@ def architect_agent(state: dict) -> dict:
     workflow_monitor.start_step("Architect", "Creating implementation tasks")
     
     try:
-        # Use PydanticOutputParser for better Gemini compatibility
-        from langchain_core.output_parsers import PydanticOutputParser
-        from langchain_core.prompts import PromptTemplate
+        # Create a simple prompt for Gemini
+        prompt_text = architect_prompt(plan=plan.model_dump_json())
+        prompt_text += "\n\nPlease respond with a JSON object that matches this structure:"
+        prompt_text += """
+{
+  "implementation_steps": [
+    {
+      "filepath": "string - path to file",
+      "task_description": "string - detailed task description"
+    }
+  ]
+}"""
         
-        parser = PydanticOutputParser(pydantic_object=TaskPlan)
-        prompt = PromptTemplate(
-            template=architect_prompt(plan=plan.model_dump_json()) + "\n{format_instructions}",
-            input_variables=[],
-            partial_variables={"format_instructions": parser.get_format_instructions()}
-        )
+        response = llm.invoke(prompt_text)
         
-        chain = prompt | llm | parser
-        resp = chain.invoke({})
+        # Parse the JSON response manually
+        import json
+        import re
+        
+        # Extract JSON from response
+        content = response.content
+        json_match = re.search(r'\{.*\}', content, re.DOTALL)
+        if json_match:
+            json_str = json_match.group()
+            data = json.loads(json_str)
+            
+            # Create the TaskPlan object manually
+            steps = [ImplementationTask(filepath=s["filepath"], task_description=s["task_description"]) 
+                    for s in data["implementation_steps"]]
+            resp = TaskPlan(implementation_steps=steps)
+            resp.plan = plan
+        else:
+            raise ValueError("Could not extract valid JSON from response")
         
         if resp is None:
             raise ValueError("Architect did not return a valid response.")
 
-        resp.plan = plan
         print(resp.model_dump_json())
         
         workflow_monitor.complete_step(resp.model_dump())
