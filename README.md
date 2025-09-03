@@ -68,7 +68,7 @@
 4. **Configure Environment**
    ```bash
    # Create .env file in root directory
-   echo "GROQ_API_KEY=your_groq_api_key_here" > .env
+   echo "GOOGLE_API_KEY=your_google_api_key_here" > .env
    ```
 
 ---
