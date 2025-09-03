@@ -288,7 +288,7 @@ curl -X POST "http://localhost:8000/api/ask-question" \
 ### **Environment Setup**
 ```bash
 # Production environment variables
-GROQ_API_KEY=your_production_key
+GOOGLE_API_KEY=your_production_key
 NODE_ENV=production
 REACT_APP_BACKEND_URL=https://your-domain.com/api
 ```
