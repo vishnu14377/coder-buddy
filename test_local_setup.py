@@ -24,10 +24,10 @@ def test_python_environment():
     
     # Test key imports
     try:
-        import groq
-        print("✅ Groq library imported")
+        import langchain_google_genai
+        print("✅ Google Generative AI library imported")
     except ImportError:
-        print("❌ Groq library not found")
+        print("❌ Google Generative AI library not found")
         return False
     
     try:
