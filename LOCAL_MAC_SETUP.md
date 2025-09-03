@@ -252,7 +252,7 @@ Open http://localhost:3000 in your browser - you should see the colorful Coder B
 ```bash
 # 1. Setup (one-time)
 uv venv && source .venv/bin/activate
-pip install groq langchain langchain-core langchain-groq langgraph pydantic python-dotenv fastapi uvicorn websockets
+pip install langchain langchain-core langchain-google-genai langgraph pydantic python-dotenv fastapi uvicorn websockets
 cd frontend && yarn install && cd ..
 echo "GROQ_API_KEY=your_key_here" > .env
 
