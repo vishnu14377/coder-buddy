@@ -78,8 +78,8 @@ cd ..
 # Create .env file in root directory
 touch .env
 
-# Add your Groq API key (get from https://console.groq.com/keys)
-echo "GROQ_API_KEY=your_groq_api_key_here" >> .env
+# Add your Google API key (get from https://aistudio.google.com/app/apikey)
+echo "GOOGLE_API_KEY=your_google_api_key_here" >> .env
 ```
 
 ---
