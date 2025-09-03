@@ -143,7 +143,7 @@ function App() {
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2 text-sm text-gray-500">
                 <Cpu className="w-4 h-4" />
-                <span>Powered by LangGraph & Groq</span>
+                <span>Powered by LangGraph & Gemini</span>
               </div>
               <div className="flex items-center space-x-2 text-sm text-gray-500">
                 <Palette className="w-4 h-4" />
