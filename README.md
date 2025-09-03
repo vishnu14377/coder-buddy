@@ -44,7 +44,7 @@
 ### Prerequisites
 - **uv package manager** - Follow instructions [here](https://docs.astral.sh/uv/getting-started/installation/)
 - **Node.js & Yarn** - For the React frontend
-- **Groq API Key** - Create one [here](https://console.groq.com/keys)
+- **Google API Key** - Create one [here](https://aistudio.google.com/app/apikey)
 
 ### ⚙️ Installation and Setup
 
