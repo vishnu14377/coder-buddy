@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 from langchain.globals import set_verbose, set_debug
-from langchain_groq.chat_models import ChatGroq
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langgraph.constants import END
 from langgraph.graph import StateGraph
 from langgraph.prebuilt import create_react_agent
@@ -18,9 +18,10 @@ _ = load_dotenv()
 set_debug(True)
 set_verbose(True)
 
-llm = ChatGroq(
-    model="llama-3.1-8b-instant",
-    api_key=os.getenv("GROQ_API_KEY")
+llm = ChatGoogleGenerativeAI(
+    model="gemini-1.5-flash",
+    api_key=os.getenv("GOOGLE_API_KEY"),
+    temperature=0.3
 )
 
 
