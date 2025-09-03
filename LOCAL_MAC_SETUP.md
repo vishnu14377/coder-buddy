@@ -55,7 +55,7 @@ which python  # Should show path with .venv
 ### **Step 3: Install Python Dependencies**
 ```bash
 # Install core dependencies
-pip install groq langchain langchain-core langchain-groq langgraph pydantic python-dotenv fastapi uvicorn websockets framer-motion
+pip install langchain langchain-core langchain-google-genai langgraph pydantic python-dotenv fastapi uvicorn websockets framer-motion
 
 # Or if you have requirements file
 pip install -r requirements.txt
