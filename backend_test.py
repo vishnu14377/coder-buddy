@@ -195,18 +195,19 @@ class CoderBuddyAPITester:
         return False
 
     def test_root_endpoint(self):
-        """Test root endpoint"""
+        """Test root endpoint (should serve frontend HTML)"""
         print("🔍 Testing Root Endpoint...")
         try:
             response = requests.get(f"{self.base_url}/", timeout=10)
             
             if response.status_code == 200:
-                data = response.json()
-                if "message" in data:
-                    self.log_test("Root Endpoint", True, f"Message: {data['message']}")
+                # Root endpoint should serve HTML for frontend, not JSON
+                content = response.text
+                if "Coder Buddy" in content and "<!DOCTYPE html>" in content:
+                    self.log_test("Root Endpoint", True, "Serves frontend HTML correctly")
                     return True
                 else:
-                    self.log_test("Root Endpoint", False, f"Unexpected response: {data}")
+                    self.log_test("Root Endpoint", False, f"Unexpected HTML content")
             else:
                 self.log_test("Root Endpoint", False, f"HTTP {response.status_code}: {response.text}")
         except Exception as e:
