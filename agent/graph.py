@@ -35,19 +35,47 @@ def planner_agent(state: dict) -> dict:
     workflow_monitor.start_step("Planner", "Analyzing user request")
     
     try:
-        # Use a more compatible approach for Gemini structured output
-        from langchain_core.output_parsers import PydanticOutputParser
-        from langchain_core.prompts import PromptTemplate
+        # Create a simple prompt for Gemini
+        prompt_text = planner_prompt(user_prompt)
+        prompt_text += "\n\nPlease respond with a JSON object that matches this structure:"
+        prompt_text += """
+{
+  "name": "string - name of the app",
+  "description": "string - one line description", 
+  "techstack": "string - tech stack to use",
+  "features": ["string array - list of features"],
+  "files": [
+    {
+      "path": "string - file path",
+      "purpose": "string - purpose of the file"
+    }
+  ]
+}"""
         
-        parser = PydanticOutputParser(pydantic_object=Plan)
-        prompt = PromptTemplate(
-            template=planner_prompt(user_prompt) + "\n{format_instructions}",
-            input_variables=[],
-            partial_variables={"format_instructions": parser.get_format_instructions()}
-        )
+        response = llm.invoke(prompt_text)
         
-        chain = prompt | llm | parser
-        resp = chain.invoke({})
+        # Parse the JSON response manually
+        import json
+        import re
+        
+        # Extract JSON from response
+        content = response.content
+        json_match = re.search(r'\{.*\}', content, re.DOTALL)
+        if json_match:
+            json_str = json_match.group()
+            data = json.loads(json_str)
+            
+            # Create the Plan object manually
+            files = [File(path=f["path"], purpose=f["purpose"]) for f in data["files"]]
+            resp = Plan(
+                name=data["name"],
+                description=data["description"],
+                techstack=data["techstack"],
+                features=data["features"],
+                files=files
+            )
+        else:
+            raise ValueError("Could not extract valid JSON from response")
         
         if resp is None:
             raise ValueError("Planner did not return a valid response.")
