@@ -1,9 +1,8 @@
 # Coder Buddy - Python Dependencies
 # Core AI and Language Processing
-groq>=0.31.0
 langchain>=0.3.27
 langchain-core>=0.3.72
-langchain-groq>=0.3.7
+langchain-google-genai>=2.0.5
 langgraph>=0.6.3
 
 # Data Processing and Validation
