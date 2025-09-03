@@ -58,16 +58,16 @@ def test_environment_file():
     with open(env_file, 'r') as f:
         content = f.read()
     
-    if "GROQ_API_KEY" in content:
-        if "your_groq_api_key_here" in content:
+    if "GOOGLE_API_KEY" in content:
+        if "your_google_api_key_here" in content:
             print("⚠️  .env file exists but contains placeholder API key")
-            print("   Please replace 'your_groq_api_key_here' with your actual Groq API key")
+            print("   Please replace 'your_google_api_key_here' with your actual Google API key")
             return False
         else:
-            print("✅ .env file configured with API key")
+            print("✅ .env file configured with Google API key")
             return True
     else:
-        print("❌ GROQ_API_KEY not found in .env file")
+        print("❌ GOOGLE_API_KEY not found in .env file")
         return False
 
 def test_frontend_setup():
