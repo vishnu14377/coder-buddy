@@ -66,9 +66,20 @@ def architect_agent(state: dict) -> dict:
     workflow_monitor.start_step("Architect", "Creating implementation tasks")
     
     try:
-        resp = llm.with_structured_output(TaskPlan).invoke(
-            architect_prompt(plan=plan.model_dump_json())
+        # Use PydanticOutputParser for better Gemini compatibility
+        from langchain_core.output_parsers import PydanticOutputParser
+        from langchain_core.prompts import PromptTemplate
+        
+        parser = PydanticOutputParser(pydantic_object=TaskPlan)
+        prompt = PromptTemplate(
+            template=architect_prompt(plan=plan.model_dump_json()) + "\n{format_instructions}",
+            input_variables=[],
+            partial_variables={"format_instructions": parser.get_format_instructions()}
         )
+        
+        chain = prompt | llm | parser
+        resp = chain.invoke({})
+        
         if resp is None:
             raise ValueError("Architect did not return a valid response.")
 
