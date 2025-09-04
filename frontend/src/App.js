@@ -136,10 +136,10 @@ function App() {
           className="animate-fadeInUp"
         >
           {activeTab === 'generate' && <ProjectGenerator />}
-          {activeTab === 'chat' && <QAChat />}
+          {activeTab === 'chat' && <EnhancedQAChat />}
           {activeTab === 'performance' && <PerformanceMonitor />}
           {activeTab === 'monitor' && <WorkflowMonitor />}
-          {activeTab === 'gallery' && <ProjectGallery />}
+          {activeTab === 'gallery' && <EnhancedProjectGallery />}
         </motion.div>
       </main>
 
