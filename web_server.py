@@ -107,6 +107,32 @@ async def generate_project(request: ProjectRequest):
         print(f"❌ Instant generation error after {error_time:.1f}ms: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error generating project: {str(e)}")
 
+@app.post("/api/generate-project-ai")
+async def generate_project_ai(request: ProjectRequest):
+    """Generate project using AI (slower but more flexible)."""
+    start_time = time.time()
+    
+    try:
+        print(f"🤖 AI-powered project generation: {request.prompt}")
+        
+        # Use AI-based fast generator for custom projects
+        result = await fast_project_generator.generate_project_fast(request.prompt)
+        
+        total_time = (time.time() - start_time) * 1000
+        
+        return {
+            **result,
+            "api_response_time": round(total_time, 2),
+            "message": f"AI-generated project completed in {result.get('generation_time', total_time):.0f}ms!",
+            "optimized": True,
+            "ai_powered": True
+        }
+        
+    except Exception as e:
+        error_time = (time.time() - start_time) * 1000
+        print(f"❌ AI generation error after {error_time:.1f}ms: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error generating project: {str(e)}")
+
 @app.post("/api/ask-question")
 async def ask_question(request: QARequest):
     """Ask a question using ultra-fast Q&A agent."""
