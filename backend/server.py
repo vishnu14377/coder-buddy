@@ -161,7 +161,7 @@ async def get_session(session_id: str):
 
 @app.get("/api/generated-projects")
 async def get_generated_projects():
-    """Get list of generated projects."""
+    """Get list of generated projects with enhanced details."""
     try:
         project_root = "/app/generated_project"
         projects = []
@@ -170,44 +170,44 @@ async def get_generated_projects():
             for item in os.listdir(project_root):
                 item_path = os.path.join(project_root, item)
                 if os.path.isfile(item_path):
-                    # Read file content for preview
                     try:
+                        # Get file preview
                         with open(item_path, 'r', encoding='utf-8') as f:
-                            content = f.read()
+                            content = f.read(300)  # First 300 chars
+                        
+                        # Determine file type
+                        file_type = "unknown"
+                        if item.endswith('.html'):
+                            file_type = "HTML"
+                        elif item.endswith('.css'):
+                            file_type = "CSS"
+                        elif item.endswith('.js'):
+                            file_type = "JavaScript"
+                        elif item.endswith('.py'):
+                            file_type = "Python"
+                        
                         projects.append({
                             "name": item,
                             "path": item_path,
-                            "type": "file",
-                            "preview": content[:500] + "..." if len(content) > 500 else content
+                            "type": file_type,
+                            "preview": content + ("..." if len(content) == 300 else ""),
+                            "size": os.path.getsize(item_path),
+                            "modified": os.path.getmtime(item_path)
                         })
                     except Exception:
                         projects.append({
                             "name": item,
                             "path": item_path,
-                            "type": "file",
-                            "preview": "Could not read file content"
-                        })
-                elif os.path.isdir(item_path):
-                    # List directory contents
-                    try:
-                        files = os.listdir(item_path)
-                        projects.append({
-                            "name": item,
-                            "path": item_path,
-                            "type": "directory",
-                            "files": files
-                        })
-                    except Exception:
-                        projects.append({
-                            "name": item,
-                            "path": item_path,
-                            "type": "directory",
-                            "files": []
+                            "type": "unknown",
+                            "preview": "Preview not available",
+                            "size": 0,
+                            "modified": 0
                         })
         
         return {
             "success": True,
-            "projects": projects
+            "projects": projects,
+            "count": len(projects)
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching projects: {str(e)}")
