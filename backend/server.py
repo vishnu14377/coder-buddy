@@ -16,6 +16,9 @@ import os
 from agent.graph import route_request, agent, qa_agent_compiled
 from agent.monitoring import workflow_monitor
 from agent.qa_agent import qa_agent
+# Import INSTANT generators
+from agent.fast_qa_agent import ultra_fast_qa_agent
+from agent.instant_generator import instant_generator
 
 app = FastAPI(title="Coder Buddy Dashboard", version="1.0.0")
 
