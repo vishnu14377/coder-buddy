@@ -3,37 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Todo App</title>
+    <title>Modern Calculator</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="app-container">
-        <header class="app-header">
-            <h1><i class="fas fa-tasks"></i> Modern Todo</h1>
-            <div class="stats">
-                <span id="total-tasks">0 tasks</span>
-                <span id="completed-tasks">0 completed</span>
+    <div class="calculator-container">
+        <div class="calculator">
+            <div class="theme-switcher">
+                <button class="theme-btn" data-theme="light">🌞</button>
+                <button class="theme-btn" data-theme="dark">🌙</button>
+                <button class="theme-btn" data-theme="colorful">🌈</button>
             </div>
-        </header>
-        
-        <div class="input-section">
-            <div class="input-container">
-                <input type="text" id="todo-input" placeholder="Add a new task..." maxlength="100">
-                <button id="add-btn"><i class="fas fa-plus"></i></button>
+            
+            <div class="display">
+                <div class="previous-operand" id="previous-operand"></div>
+                <div class="current-operand" id="current-operand">0</div>
             </div>
-        </div>
-        
-        <div class="filter-section">
-            <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="active">Active</button>
-            <button class="filter-btn" data-filter="completed">Completed</button>
-        </div>
-        
-        <ul id="todo-list" class="todo-list"></ul>
-        
-        <div class="actions">
-            <button id="clear-completed" class="clear-btn">Clear Completed</button>
+            
+            <div class="buttons">
+                <button class="btn clear" onclick="calculator.clear()">C</button>
+                <button class="btn clear" onclick="calculator.delete()">⌫</button>
+                <button class="btn operator" onclick="calculator.chooseOperation('±')">±</button>
+                <button class="btn operator" onclick="calculator.chooseOperation('÷')">÷</button>
+                
+                <button class="btn number" onclick="calculator.appendNumber('7')">7</button>
+                <button class="btn number" onclick="calculator.appendNumber('8')">8</button>
+                <button class="btn number" onclick="calculator.appendNumber('9')">9</button>
+                <button class="btn operator" onclick="calculator.chooseOperation('×')">×</button>
+                
+                <button class="btn number" onclick="calculator.appendNumber('4')">4</button>
+                <button class="btn number" onclick="calculator.appendNumber('5')">5</button>
+                <button class="btn number" onclick="calculator.appendNumber('6')">6</button>
+                <button class="btn operator" onclick="calculator.chooseOperation('-')">-</button>
+                
+                <button class="btn number" onclick="calculator.appendNumber('1')">1</button>
+                <button class="btn number" onclick="calculator.appendNumber('2')">2</button>
+                <button class="btn number" onclick="calculator.appendNumber('3')">3</button>
+                <button class="btn operator" onclick="calculator.chooseOperation('+')">+</button>
+                
+                <button class="btn number zero" onclick="calculator.appendNumber('0')">0</button>
+                <button class="btn number" onclick="calculator.appendNumber('.')">.</button>
+                <button class="btn equals" onclick="calculator.compute()">=</button>
+            </div>
+            
+            <div class="history" id="history-panel">
+                <h3>History</h3>
+                <div id="history-list"></div>
+                <button class="clear-history" onclick="calculator.clearHistory()">Clear History</button>
+            </div>
         </div>
     </div>
     

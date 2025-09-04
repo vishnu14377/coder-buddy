@@ -1,191 +1,191 @@
-class TodoApp {
+class Calculator {
     constructor() {
-        this.todos = JSON.parse(localStorage.getItem('todos')) || [];
-        this.currentFilter = 'all';
-        this.init();
+        this.clear();
+        this.history = JSON.parse(localStorage.getItem('calc-history')) || [];
+        this.updateHistoryDisplay();
+        this.addKeyboardSupport();
+        this.loadTheme();
     }
 
-    init() {
-        this.bindEvents();
-        this.render();
-        this.updateStats();
+    clear() {
+        this.currentOperand = '';
+        this.previousOperand = '';
+        this.operation = undefined;
+        this.updateDisplay();
     }
 
-    bindEvents() {
-        const addBtn = document.getElementById('add-btn');
-        const todoInput = document.getElementById('todo-input');
-        const clearBtn = document.getElementById('clear-completed');
-        const filterBtns = document.querySelectorAll('.filter-btn');
+    delete() {
+        this.currentOperand = this.currentOperand.toString().slice(0, -1);
+        this.updateDisplay();
+    }
 
-        addBtn.addEventListener('click', () => this.addTodo());
-        todoInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') this.addTodo();
+    appendNumber(number) {
+        if (number === '.' && this.currentOperand.includes('.')) return;
+        this.currentOperand = this.currentOperand.toString() + number.toString();
+        this.updateDisplay();
+    }
+
+    chooseOperation(operation) {
+        if (this.currentOperand === '') return;
+        if (this.previousOperand !== '') {
+            this.compute();
+        }
+        
+        if (operation === '±') {
+            this.currentOperand = (parseFloat(this.currentOperand) * -1).toString();
+            this.updateDisplay();
+            return;
+        }
+        
+        this.operation = operation;
+        this.previousOperand = this.currentOperand;
+        this.currentOperand = '';
+        this.updateDisplay();
+    }
+
+    compute() {
+        let computation;
+        const prev = parseFloat(this.previousOperand);
+        const current = parseFloat(this.currentOperand);
+        
+        if (isNaN(prev) || isNaN(current)) return;
+        
+        const expression = `${prev} ${this.operation} ${current}`;
+        
+        switch (this.operation) {
+            case '+':
+                computation = prev + current;
+                break;
+            case '-':
+                computation = prev - current;
+                break;
+            case '×':
+                computation = prev * current;
+                break;
+            case '÷':
+                if (current === 0) {
+                    alert('Cannot divide by zero!');
+                    return;
+                }
+                computation = prev / current;
+                break;
+            default:
+                return;
+        }
+        
+        // Add to history
+        this.addToHistory(`${expression} = ${computation}`);
+        
+        this.currentOperand = computation;
+        this.operation = undefined;
+        this.previousOperand = '';
+        this.updateDisplay();
+    }
+
+    updateDisplay() {
+        document.getElementById('current-operand').innerText = 
+            this.getDisplayNumber(this.currentOperand);
+        
+        if (this.operation != null) {
+            document.getElementById('previous-operand').innerText =
+                `${this.getDisplayNumber(this.previousOperand)} ${this.operation}`;
+        } else {
+            document.getElementById('previous-operand').innerText = '';
+        }
+    }
+
+    getDisplayNumber(number) {
+        if (number === '') return '0';
+        const stringNumber = number.toString();
+        const integerDigits = parseFloat(stringNumber.split('.')[0]);
+        const decimalDigits = stringNumber.split('.')[1];
+        let integerDisplay;
+        
+        if (isNaN(integerDigits)) {
+            integerDisplay = '';
+        } else {
+            integerDisplay = integerDigits.toLocaleString('en', {
+                maximumFractionDigits: 0
+            });
+        }
+        
+        if (decimalDigits != null) {
+            return `${integerDisplay}.${decimalDigits}`;
+        } else {
+            return integerDisplay;
+        }
+    }
+
+    addToHistory(calculation) {
+        this.history.unshift(calculation);
+        if (this.history.length > 10) {
+            this.history = this.history.slice(0, 10);
+        }
+        localStorage.setItem('calc-history', JSON.stringify(this.history));
+        this.updateHistoryDisplay();
+    }
+
+    updateHistoryDisplay() {
+        const historyList = document.getElementById('history-list');
+        historyList.innerHTML = '';
+        
+        this.history.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'history-item';
+            div.textContent = item;
+            historyList.appendChild(div);
         });
-        clearBtn.addEventListener('click', () => this.clearCompleted());
+    }
 
-        filterBtns.forEach(btn => {
+    clearHistory() {
+        this.history = [];
+        localStorage.removeItem('calc-history');
+        this.updateHistoryDisplay();
+    }
+
+    addKeyboardSupport() {
+        document.addEventListener('keydown', (e) => {
+            if (e.key >= '0' && e.key <= '9' || e.key === '.') {
+                this.appendNumber(e.key);
+            } else if (e.key === '+') {
+                this.chooseOperation('+');
+            } else if (e.key === '-') {
+                this.chooseOperation('-');
+            } else if (e.key === '*') {
+                this.chooseOperation('×');
+            } else if (e.key === '/') {
+                e.preventDefault();
+                this.chooseOperation('÷');
+            } else if (e.key === 'Enter' || e.key === '=') {
+                this.compute();
+            } else if (e.key === 'Escape') {
+                this.clear();
+            } else if (e.key === 'Backspace') {
+                this.delete();
+            }
+        });
+    }
+
+    loadTheme() {
+        const savedTheme = localStorage.getItem('calc-theme') || 'light';
+        this.setTheme(savedTheme);
+        
+        document.querySelectorAll('.theme-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                this.setFilter(e.target.dataset.filter);
+                this.setTheme(e.target.dataset.theme);
             });
         });
     }
 
-    addTodo() {
-        const input = document.getElementById('todo-input');
-        const text = input.value.trim();
-
-        if (text) {
-            const todo = {
-                id: Date.now(),
-                text: text,
-                completed: false,
-                createdAt: new Date().toISOString()
-            };
-
-            this.todos.unshift(todo);
-            input.value = '';
-            this.saveTodos();
-            this.render();
-            this.updateStats();
-        }
-    }
-
-    toggleTodo(id) {
-        const todo = this.todos.find(t => t.id === id);
-        if (todo) {
-            todo.completed = !todo.completed;
-            this.saveTodos();
-            this.render();
-            this.updateStats();
-        }
-    }
-
-    deleteTodo(id) {
-        this.todos = this.todos.filter(t => t.id !== id);
-        this.saveTodos();
-        this.render();
-        this.updateStats();
-    }
-
-    editTodo(id, newText) {
-        const todo = this.todos.find(t => t.id === id);
-        if (todo) {
-            todo.text = newText;
-            this.saveTodos();
-            this.render();
-        }
-    }
-
-    clearCompleted() {
-        this.todos = this.todos.filter(t => !t.completed);
-        this.saveTodos();
-        this.render();
-        this.updateStats();
-    }
-
-    setFilter(filter) {
-        this.currentFilter = filter;
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
-        this.render();
-    }
-
-    getFilteredTodos() {
-        switch (this.currentFilter) {
-            case 'active':
-                return this.todos.filter(t => !t.completed);
-            case 'completed':
-                return this.todos.filter(t => t.completed);
-            default:
-                return this.todos;
-        }
-    }
-
-    render() {
-        const todoList = document.getElementById('todo-list');
-        const filteredTodos = this.getFilteredTodos();
-
-        todoList.innerHTML = '';
-
-        if (filteredTodos.length === 0) {
-            todoList.innerHTML = `
-                <li class="todo-item" style="text-align: center; padding: 40px;">
-                    <span style="color: #999; font-style: italic;">
-                        ${this.currentFilter === 'completed' ? 'No completed tasks' :
-                          this.currentFilter === 'active' ? 'No active tasks' : 'No tasks yet'}
-                    </span>
-                </li>
-            `;
-            return;
-        }
-
-        filteredTodos.forEach(todo => {
-            const li = document.createElement('li');
-            li.className = `todo-item ${todo.completed ? 'completed' : ''}`;
-            li.innerHTML = `
-                <div class="todo-checkbox ${todo.completed ? 'checked' : ''}" 
-                     onclick="app.toggleTodo(${todo.id})"></div>
-                <span class="todo-text ${todo.completed ? 'completed' : ''}">${todo.text}</span>
-                <div class="todo-actions">
-                    <button class="action-btn edit-btn" onclick="app.startEdit(${todo.id})" title="Edit">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="action-btn delete-btn" onclick="app.deleteTodo(${todo.id})" title="Delete">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            `;
-            todoList.appendChild(li);
-        });
-    }
-
-    startEdit(id) {
-        const todo = this.todos.find(t => t.id === id);
-        if (todo) {
-            const newText = prompt('Edit task:', todo.text);
-            if (newText !== null && newText.trim()) {
-                this.editTodo(id, newText.trim());
-            }
-        }
-    }
-
-    updateStats() {
-        const total = this.todos.length;
-        const completed = this.todos.filter(t => t.completed).length;
+    setTheme(theme) {
+        document.body.className = theme;
+        localStorage.setItem('calc-theme', theme);
         
-        document.getElementById('total-tasks').textContent = `${total} task${total !== 1 ? 's' : ''}`;
-        document.getElementById('completed-tasks').textContent = `${completed} completed`;
-    }
-
-    saveTodos() {
-        localStorage.setItem('todos', JSON.stringify(this.todos));
-    }
-}
-
-// Initialize the app
-const app = new TodoApp();
-
-// Add some demo tasks on first load
-if (app.todos.length === 0) {
-    const demoTasks = [
-        'Welcome to your Modern Todo App! 🎉',
-        'Click the checkbox to mark tasks as complete ✅',
-        'Use the edit button to modify tasks ✏️',
-        'Filter tasks using the buttons above 🔍'
-    ];
-    
-    demoTasks.forEach(task => {
-        app.todos.push({
-            id: Date.now() + Math.random(),
-            text: task,
-            completed: false,
-            createdAt: new Date().toISOString()
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+            btn.style.background = btn.dataset.theme === theme ? '#007bff' : '#f0f0f0';
+            btn.style.color = btn.dataset.theme === theme ? 'white' : 'black';
         });
-    });
-    
-    app.saveTodos();
-    app.render();
-    app.updateStats();
+    }
 }
+
+const calculator = new Calculator();
