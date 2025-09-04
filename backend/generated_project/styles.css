@@ -1,0 +1,44 @@
+/* Styles for contact form */
+#contactForm {
+  background-color: #f2f2f2;
+  border: 1px solid #ccc;
+  padding: 20px;
+  width: 500px;
+  margin: 0 auto;
+}
+
+#contactForm label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+#name, #email, #message {
+  width: calc(100% - 22px);
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+#message {
+  height: 150px;
+}
+
+#submit {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+}
+
+#submit:hover {
+  background-color: #45a049;
+}
+
+/* Media query for responsiveness */
+@media (max-width: 500px) {
+  #contactForm {
+    width: 90%;
+  }
+}
