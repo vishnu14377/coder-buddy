@@ -108,18 +108,26 @@ async def generate_project(request: ProjectRequest):
 
 @app.post("/api/ask-question")
 async def ask_question(request: QARequest):
-    """Ask a question to the general Q&A agent."""
+    """Ask a question using ultra-fast Q&A agent."""
+    start_time = time.time()
+    
     try:
-        # Use the Q&A agent directly for faster response
-        answer = qa_agent.answer_question(request.question, request.context)
+        # Use ultra-fast agent with async processing
+        answer = await ultra_fast_qa_agent.answer_question_async(request.question, request.context)
+        
+        response_time = (time.time() - start_time) * 1000
         
         return {
             "success": True,
             "answer": answer,
             "question": request.question,
-            "is_technical": qa_agent.is_technical_question(request.question)
+            "is_technical": ultra_fast_qa_agent.is_technical_question(request.question),
+            "response_time_ms": round(response_time, 2),
+            "optimized": True
         }
     except Exception as e:
+        error_time = (time.time() - start_time) * 1000
+        print(f"❌ Q&A error after {error_time:.1f}ms: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error processing question: {str(e)}")
 
 @app.get("/api/sessions")
