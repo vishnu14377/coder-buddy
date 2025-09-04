@@ -18,6 +18,7 @@ import ProjectGenerator from './components/ProjectGenerator';
 import QAChat from './components/QAChat';
 import WorkflowMonitor from './components/WorkflowMonitor';
 import ProjectGallery from './components/ProjectGallery';
+import PerformanceMonitor from './components/PerformanceMonitor';
 
 function App() {
   const [activeTab, setActiveTab] = useState('generate');
