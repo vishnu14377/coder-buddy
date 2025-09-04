@@ -11,7 +11,7 @@ import time
 from datetime import datetime
 
 class CoderBuddyAPITester:
-    def __init__(self, base_url="https://32766f6b-2244-4c6f-889f-e9060372d37d.preview.emergentagent.com"):
+    def __init__(self, base_url="https://app-network-doctor.preview.emergentagent.com"):
         self.base_url = base_url
         self.tests_run = 0
         self.tests_passed = 0
