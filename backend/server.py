@@ -212,6 +212,55 @@ async def get_generated_projects():
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching projects: {str(e)}")
 
+@app.get("/api/file-content")
+async def get_file_content(path: str):
+    """Get content of a specific file."""
+    try:
+        # Security check - ensure path is within project directory
+        if not path.startswith("/app/generated_project/"):
+            raise HTTPException(status_code=403, detail="Access denied")
+        
+        if not os.path.exists(path):
+            raise HTTPException(status_code=404, detail="File not found")
+        
+        with open(path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        return {
+            "success": True,
+            "content": content,
+            "path": path
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error reading file: {str(e)}")
+
+@app.post("/api/save-file")
+async def save_file(request: dict):
+    """Save content to a specific file."""
+    try:
+        path = request.get("path")
+        content = request.get("content")
+        
+        if not path or content is None:
+            raise HTTPException(status_code=400, detail="Path and content are required")
+        
+        # Security check - ensure path is within project directory
+        if not path.startswith("/app/generated_project/"):
+            raise HTTPException(status_code=403, detail="Access denied")
+        
+        # Create directory if it doesn't exist
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        
+        with open(path, 'w', encoding='utf-8') as f:
+            f.write(content)
+        
+        return {
+            "success": True,
+            "message": "File saved successfully",
+            "path": path
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error saving file: {str(e)}")
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     """WebSocket endpoint for real-time updates."""
