@@ -82,23 +82,28 @@ async def health_check():
 
 @app.post("/api/generate-project")
 async def generate_project(request: ProjectRequest):
-    """Generate a new project using the agent workflow."""
+    """Generate project INSTANTLY using pre-built templates."""
+    start_time = time.time()
+    
     try:
-        # Run the project generation workflow
-        result = route_request(request.prompt, "project")
+        print(f"⚡ INSTANT project generation: {request.prompt}")
         
-        # Extract useful information from the result
-        session_info = {}
-        if 'session_id' in result:
-            session_info = workflow_monitor.to_dict(result['session_id'])
+        # Use instant generator for sub-second generation
+        result = instant_generator.generate_instant(request.prompt)
+        
+        total_time = (time.time() - start_time) * 1000
         
         return {
-            "success": True,
-            "result": str(result),
-            "session_info": session_info,
-            "message": "Project generation completed successfully!"
+            **result,
+            "api_response_time": round(total_time, 2),
+            "message": f"⚡ INSTANT: Project generated in {result.get('generation_time', 0):.0f}ms!",
+            "optimized": True,
+            "instant": True
         }
+        
     except Exception as e:
+        error_time = (time.time() - start_time) * 1000
+        print(f"❌ Instant generation error after {error_time:.1f}ms: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error generating project: {str(e)}")
 
 @app.post("/api/ask-question")
