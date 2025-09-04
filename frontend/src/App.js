@@ -44,6 +44,7 @@ function App() {
   const tabs = [
     { id: 'generate', label: 'Generate Project', icon: Code2, color: 'primary' },
     { id: 'chat', label: 'Q&A Assistant', icon: MessageCircle, color: 'secondary' },
+    { id: 'performance', label: 'Performance', icon: Zap, color: 'accent' },
     { id: 'monitor', label: 'Workflow Monitor', icon: Monitor, color: 'accent' },
     { id: 'gallery', label: 'Project Gallery', icon: GitBranch, color: 'primary' }
   ];
