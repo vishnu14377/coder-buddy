@@ -76,6 +76,10 @@ function App() {
             </motion.div>
 
             <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2 px-3 py-1 rounded-full text-sm bg-yellow-100 text-yellow-700">
+                <Zap className="w-3 h-3 animate-pulse" />
+                <span>Ultra Fast Mode</span>
+              </div>
               <div className={`flex items-center space-x-2 px-3 py-1 rounded-full text-sm ${
                 isConnected 
                   ? 'bg-green-100 text-green-700' 
