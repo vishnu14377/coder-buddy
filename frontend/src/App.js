@@ -15,9 +15,9 @@ import './App.css';
 
 // Import components
 import ProjectGenerator from './components/ProjectGenerator';
-import QAChat from './components/QAChat';
+import EnhancedQAChat from './components/EnhancedQAChat';
 import WorkflowMonitor from './components/WorkflowMonitor';
-import ProjectGallery from './components/ProjectGallery';
+import EnhancedProjectGallery from './components/EnhancedProjectGallery';
 import PerformanceMonitor from './components/PerformanceMonitor';
 
 function App() {
