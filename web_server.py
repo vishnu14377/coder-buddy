@@ -20,6 +20,7 @@ from agent.qa_agent import qa_agent
 # Import optimized agents
 from agent.fast_qa_agent import ultra_fast_qa_agent
 from agent.fast_project_generator import fast_project_generator
+from agent.instant_generator import instant_generator
 
 app = FastAPI(title="Coder Buddy Dashboard", version="1.0.0")
 
