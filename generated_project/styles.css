@@ -61,57 +61,63 @@ footer a:hover {
 
 /* Contact form styles */
 
-.contact-form {
-  background-color: #ffffff;
+#contactForm {
+  width: 500px;
   padding: 20px;
-  border: 1px solid #cccccc;
+  background-color: #ffffff;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-.contact-form input, .contact-form textarea {
-  width: 100%;
+#contactForm input, #contactForm textarea {
+  width: calc(100% - 22px);
   padding: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   border: 1px solid #cccccc;
   border-radius: 5px;
+  font-size: 16px;
 }
 
-.contact-form input[type="submit"] {
+#contactForm button {
   background-color: #00698f;
   color: #ffffff;
   padding: 10px 20px;
   border: none;
-  border-radius: 10px;
+  border-radius: 5px;
+  font-size: 16px;
   cursor: pointer;
 }
 
-.contact-form input[type="submit"]:hover {
+#contactForm button:hover {
   background-color: #004c7a;
 }
 
 /* Responsive design */
 
 @media only screen and (max-width: 768px) {
-  .container {
-    max-width: 90%;
-  }
-  .contact-form {
+  #contactForm {
+    width: 90%;
     padding: 10px;
   }
-  .contact-form input, .contact-form textarea {
+  #contactForm input, #contactForm textarea {
     padding: 5px;
+    font-size: 14px;
+  }
+  #contactForm button {
+    font-size: 14px;
   }
 }
 
 @media only screen and (max-width: 480px) {
-  .container {
-    max-width: 80%;
-  }
-  .contact-form {
+  #contactForm {
+    width: 90%;
     padding: 5px;
   }
-  .contact-form input, .contact-form textarea {
+  #contactForm input, #contactForm textarea {
     padding: 3px;
+    font-size: 12px;
+  }
+  #contactForm button {
+    font-size: 12px;
   }
 }
