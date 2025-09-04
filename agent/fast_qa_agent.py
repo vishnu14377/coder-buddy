@@ -285,5 +285,5 @@ Provide a helpful, concise answer.
 # Create global ultra-fast instance
 ultra_fast_qa_agent = UltraFastQAAgent()
 
-# Warm up cache on import
-ultra_fast_qa_agent.warm_up_cache()
+# Warm up cache on import (disabled to avoid quota issues during startup)
+# ultra_fast_qa_agent.warm_up_cache()
