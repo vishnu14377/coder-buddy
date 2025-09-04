@@ -21,4 +21,11 @@ wheels/
 .idea/
 
 # System files
-.DS_Store
+.DS_Store-e 
+# Environment files
+*.env
+*.env.*
+-e 
+# Environment files
+*.env
+*.env.*
