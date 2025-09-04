@@ -133,6 +133,7 @@ function App() {
         >
           {activeTab === 'generate' && <ProjectGenerator />}
           {activeTab === 'chat' && <QAChat />}
+          {activeTab === 'performance' && <PerformanceMonitor />}
           {activeTab === 'monitor' && <WorkflowMonitor />}
           {activeTab === 'gallery' && <ProjectGallery />}
         </motion.div>
